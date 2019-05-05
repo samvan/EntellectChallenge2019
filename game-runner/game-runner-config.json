@@ -1,10 +1,10 @@
 {
   "round-state-output-location": "./match-logs",
-  "game-config-file-location": "",
-  "game-engine-jar": "",
+  "game-config-file-location": "../game-engine/src/commonMain/resources/default-config.json",
+  "game-engine-jar": "../game-engine/build/libs/ec-2019-game-engine-jvm-full-2019.1.0.jar",
   "verbose-mode": true,
   "max-runtime-ms": 1000,
-  "player-a": "../starter-bots/javascript",
+  "player-a": "../starter-bots/purely-functional-scala",
   "player-b": "../reference-bot/javascript",
   "max-request-retries": 5,
   "request-timeout-ms": 5000,
@@ -17,5 +17,7 @@
     "match-result-queue": "match-results-qa",
     "dead-match-queue": "dead-match-qa",
     "api-endpoint": "http://host.docker.internal"
-  }
+  },
+  "seed": 10223,
+  "pause-round": 30
 }

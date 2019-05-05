@@ -66,6 +66,9 @@ public class GameRunnerConfig {
     @SerializedName("tournament")
     public TournamentConfig tournamentConfig;
 
+    @SerializedName("pause-round")
+    public int pauseRound;
+
     public static GameRunnerConfig load(String configFile) throws Exception {
 
         LOGGER.info(String.format("Reading config file: %s", configFile));

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 public class GameEngineRunner implements LifecycleEngineRunner {
 
@@ -48,17 +49,34 @@ public class GameEngineRunner implements LifecycleEngineRunner {
     private RendererResolver rendererResolver;
     private List<BotExecutionContext> botExecutionContexts;
 
+    private int pauseRound;
+
     public GameResult runMatch() throws Exception {
+        pauseRound = gameRunnerConfig.pauseRound;
 
         onGameStarting();
         while (!isGameComplete()) {
             onRoundStarting();
             onProcessRound();
             onRoundComplete();
+            pauseFromRound();
         }
         onGameComplete();
 
         return gameResult;
+    }
+
+    private void pauseFromRound() {
+        if (pauseRound > 0 && gameMap.getCurrentRound() >= pauseRound) {
+            log.info("Enter how many rounds till next pause (Blank for one): ");
+            Scanner scan = new Scanner(System.in);
+            try {
+                pauseRound = Integer.parseInt(scan.nextLine()) + gameMap.getCurrentRound();
+                log.info("pausing on round " + pauseRound);
+            } catch (Exception e) {
+                log.info("pausing on next round");
+            }
+        }
     }
 
     @Override
