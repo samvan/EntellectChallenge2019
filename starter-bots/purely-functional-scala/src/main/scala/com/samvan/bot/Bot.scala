@@ -1,51 +1,11 @@
-package bot
+package com.samvan.bot
 
-import scalaz.zio._
-import scalaz.zio.console._
-import scalaz.zio.random._
 import cats._
 import cats.implicits._
-import io.circe.parser._
 import io.circe.generic.auto._
-
-object GameState {
-  final case class Cell(x: Int, y: Int, `type`: String)
-
-  type GameMap = Seq[Seq[Cell]]
-
-  final case class State(
-    currentRound: Int,
-    maxRounds: Int,
-    mapSize: Int,
-    currentWormId: Int,
-    consecutiveDoNothingCount: Int,
-    myPlayer: Player,
-    opponents: Seq[Opponent],
-    map: GameMap)
-
-  final case class Player(id: Int, score: Int, health: Int, worms: Seq[Worm])
-
-  final case class Opponent(id: Int, score: Int, worms: Seq[OpponentWorm])
-
-  final case class Worm(
-    id: Int,
-    health: Int,
-    position: Coord,
-    weapon: Weapon,
-    diggingRange: Int,
-    movementRange: Int)
-
-  final case class OpponentWorm(
-    id: Int,
-    health: Int,
-    position: Coord,
-    diggingRange: Int,
-    movementRange: Int)
-
-  final case class Coord(x: Int, y: Int)
-
-  final case class Weapon(damage: Int, range: Int)
-}
+import io.circe.parser._
+import scalaz.zio._
+import scalaz.zio.console._
 
 trait FileReader {
   def reader: FileReader.Service[FileReader]
@@ -201,18 +161,4 @@ object Bot {
     _      <- console.putStrLn(show"C;$roundNumber;$move")
     result <- startBot(roundNumber + 1)
   } yield result
-}
-
-object BotRunner extends App {
-  val environment = new Console.Live with Random.Live with FileReader.Live
-
-  def handleError(error: Any): ZIO[Console, Nothing, Int] = for {
-    _      <- console.putStrLn(s"An error occured: ${error}\nWith type: ${error.getClass}")
-    result <- run(List.empty)
-  } yield result
-
-  def run(args: List[String]) =
-    Bot.startBot(1)
-      .provide(environment)
-      .foldM(handleError(_), _ => ZIO.succeed(0))
 }
